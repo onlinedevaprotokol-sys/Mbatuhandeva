@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M.BATUHAN YILDIZBAKAN - Mağaza</title>
+    <style>
+        :root {
+            --primary: #111;
+            --accent: #d4af37; /* Altın Rengi */
+            --bg: #f8f9fa;
+            --text: #222;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+        }
+
+        /* --- AÇILIŞ ANİMASYONU (INTRO) --- */
+        #intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #0d0d0d;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+
+        .signature-container {
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .signature-svg text {
+            font-family: 'Great Vibes', 'Brush Script MT', cursive, sans-serif;
+            font-size: 42px;
+            fill: transparent;
+            stroke: var(--accent);
+            stroke-width: 1.5;
+            stroke-dasharray: 700;
+            stroke-dashoffset: 700;
+            animation: sign 3.5s ease-in-out forwards;
+        }
+
+        @keyframes sign {
+            0% { stroke-dashoffset: 700; fill: transparent; }
+            70% { stroke-dashoffset: 0; fill: transparent; }
+            100% { stroke-dashoffset: 0; fill: var(--accent); }
+        }
+
+        .fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* --- SİTE GENEL YAPISI --- */
+        header {
+            background: #000;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 2px solid var(--accent);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+            color: var(--accent);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* --- ÜRÜN İZGARASI --- */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .product-card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background-color: #eee;
+        }
+
+        .product-info {
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .product-price {
+            font-size: 1.2rem;
+            color: #27ae60;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .btn-buy {
+            background: #000;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            width: 100%;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .btn-buy:hover {
+            background: var(--accent);
+            color: #000;
+        }
+
+        /* --- SIPARİŞ MODALI (POPUP) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .modal h2 {
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+        .modal-product-summary {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            height: 80px;
+        }
+
+        .btn-submit {
+            background: #25D366; /* WhatsApp Yeşili */
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            background: #1eb954;
+        }
+
+        .btn-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #111;
+            color: #777;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Açılış Animasyonu -->
+    <div id="intro-overlay">
+        <div class="signature-container">
+            <svg class="signature-svg" viewBox="0 0 800 200" width="100%" height="100%">
+                <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle">
+                    M.BATUHAN YILDIZBAKAN
+                </text>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Üst Başlık -->
+    <header>
+        <h1>M.BATUHAN YILDIZBAKAN</h1>
+    </header>
+
+    <!-- Ürünler Listesi -->
+    <div class="container">
+        <div class="products-grid" id="productsGrid"></div>
+    </div>
+
+    <!-- Sipariş Bilgi Toplama Modalı -->
+    <div class="modal-overlay" id="orderModal">
+        <div class="modal">
+            <button class="btn-close" onclick="closeModal()">✕</button>
+            <h2>Sipariş Tamamlama</h2>
+            <div class="modal-product-summary" id="modalProductSummary"></div>
+            
+            <form id="orderForm" onsubmit="sendToWhatsApp(event)">
+                <div class="form-group">
+                    <label for="fullName">Ad Soyad *</label>
+                    <input type="text" id="fullName" required placeholder="Ahmet Yılmaz">
+                </div>
+                <div class="form-group">
+                    <label for="phone">Telefon Numarası *</label>
+                    <input type="tel" id="phone" required placeholder="0555 123 45 67">
+                </div>
+                <div class="form-group">
+                    <label for="address">Teslimat Adresi *</label>
+                    <textarea id="address" required placeholder="Mahalle, Sokak, No, İlçe/İl"></textarea>
+                </div>
+                <button type="submit" class="btn-submit">Siparişi WhatsApp ile Gönder</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 M.BATUHAN YILDIZBAKAN - Tüm Hakları Saklıdır.
+    </footer>
+
+    <script>
+        // 1. Açılış Animasyonunu Kapatma
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const intro = document.getElementById('intro-overlay');
+                intro.classList.add('fade-out');
+            }, 4000); // 4 saniye sonra web sitesi açılır
+        });
+
+        // 2. 30 Adet Örnek Ürün Oluşturma
+        const products = [];
+        for (let i = 1; i <= 30; i++) {
+            products.push({
+                id: i,
+                title: `Özel Tasarım Ürün #${i}`,
+                price: (i * 45 + 100) + " TL",
+                image: `https://picsum.photos/400/300?random=${i}`
+            });
+        }
+
+        // Ürünleri Ekrana Yazdırma
+        const grid = document.getElementById('productsGrid');
+        products.forEach(product => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+                <img src="${product.image}" alt="${product.title}" class="product-img">
+                <div class="product-info">
+                    <div class="product-title">${product.title}</div>
+                    <div class="product-price">${product.price}</div>
+                    <button class="btn-buy" onclick="openModal('${product.title}', '${product.price}')">Satın Al</button>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+
+        // 3. Sipariş Modalı Yönetimi
+        let selectedProduct = { title: '', price: '' };
+
+        function openModal(title, price) {
+            selectedProduct = { title, price };
+            document.getElementById('modalProductSummary').innerText = `${title} - ${price}`;
+            document.getElementById('orderModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('orderModal').style.display = 'none';
+        }
+
+        // 4. WhatsApp Yönlendirmesi
+        function sendToWhatsApp(event) {
+            event.preventDefault();
+
+            const fullName = document.getElementById('fullName').value;
+            const phone = document.getElementById('phone').value;
+            const address = document.getElementById('address').value;
+            const targetNumber = "905451159968";
+
+            // Oluşturulacak Mesaj Metni
+            const message = `Merhaba M.Batuhan Yıldızbakan,\n\nYeni bir siparişim var!\n\n*Ürün:* ${selectedProduct.title}\n*Tutar:* ${selectedProduct.price}\n\n*Müşteri Bilgileri:*\n- *Ad Soyad:* ${fullName}\n- *Telefon:* ${phone}\n- *Adres:* ${address}`;
+
+            // URL Formatı
+            const whatsappUrl = `https://wa.me/${targetNumber}?text=${encodeURIComponent(message)}`;
+
+            // Yönlendirme
+            window.open(whatsappUrl, '_blank');
+            closeModal();
+        }
+    </script>
+</body>
+</html>
